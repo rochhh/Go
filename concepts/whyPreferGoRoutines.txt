@@ -1,0 +1,39 @@
+package main
+
+try running the code below and you will see that without proper 
+go routines , the DoWork() after 1 sec returns a new data!
+
+hence we need to optimize this !
+
+package main
+
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
+
+func DoWork() int {
+	time.Sleep(time.Second)
+	return rand.Intn(100) 
+}
+
+func main() {
+	
+	dataChan := make(chan int)
+
+ 	go func ()  {
+		for i := 0 ; i < 1000 ; i++ {
+			res := DoWork()
+			dataChan <- res
+		}
+		close(dataChan)
+	}()
+
+	
+	for n := range dataChan {
+		fmt.Println(n)
+	}
+
+
+}

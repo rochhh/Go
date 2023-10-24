@@ -1,0 +1,49 @@
+package main
+
+
+package main
+
+import (
+	"fmt"
+)
+
+
+
+func main() {
+	
+	ch := make(chan string , 4)
+
+	
+	ch <- "foo"
+	ch <- "bar"
+	ch <- "baz"
+	ch <- "boss"
+	
+	fmt.Println(len(ch))
+
+	// user := <- ch
+
+	// fmt.Println(user)
+
+	readMessage( ch )				 // reads foo from queue
+	readMessage( ch )				//  reads bar from queue
+	readMessage( ch )				// reads baz from queue
+	readMessage( ch )				// reads boss from queue
+
+	sendMessage(ch)					// sends "new value added to the channel"
+
+	user := <- ch
+
+	fmt.Println(user)				// prints "new value added"
+}
+
+
+func sendMessage ( msgch chan<- string ){	//  chan<- send only
+	msgch <- "new value added"
+}
+
+
+func readMessage( msgch <-chan string ){   // <-chan receive only 
+	msg := <- msgch
+	fmt.Println(msg)
+}

@@ -1,0 +1,46 @@
+package main
+
+import (
+	"net/http"
+
+	"gopkg.in/yaml.v2"
+)
+
+
+func MapHandler( path map[string]string , fallback http.Handler ) http.HandlerFunc {
+	
+	return func(w http.ResponseWriter , r *http.Request ){
+		p := r.URL.Path
+
+		if dest , ok := path[p] ; ok {
+			http.Redirect(w , r , dest , http.StatusFound)
+			return
+		}
+		fallback.ServeHTTP(w,r)
+	}	
+	
+
+}
+
+type pathUrl struct {
+	Path string `yaml:"path"`
+	URL string 	`yaml:"url"`
+}
+
+func YamlHandler(y []byte , fallback http.Handler ) (http.HandlerFunc , error) {
+
+	var pathUrls []pathUrl
+	err := yaml.Unmarshal(y , &pathUrls) 
+
+	if err != nil {
+		return nil , err
+	}
+
+	pathToUrls := make(map[string]string)
+
+	for _ , pu := range pathUrls {								// convert the array to a map 
+		pathToUrls[pu.Path] = pu.URL
+	}
+
+	return MapHandler(pathToUrls , fallback) , nil
+}

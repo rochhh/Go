@@ -1,0 +1,32 @@
+package main
+
+import "fmt"
+
+func main() {
+
+	t := closureFunc()
+
+	fmt.Println(t())
+	fmt.Println(t())
+	fmt.Println(t())
+
+	t2 := closureFunc()
+	fmt.Println("the second time closure functions are called - > the values reset")
+	fmt.Println(t2())
+	fmt.Println(t2())
+	fmt.Println(t2())
+	fmt.Println(t2())
+
+}
+
+
+func closureFunc() func() int {
+	
+	i := 0
+	
+	return func () int  {
+		i++
+		return i
+	}
+
+}

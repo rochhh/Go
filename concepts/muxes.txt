@@ -1,0 +1,66 @@
+package main
+
+import (
+	"net/http"
+	"time"
+)
+
+// func timeHandler( w http.ResponseWriter , r *http.Request ) {
+// 	tm := time.Now().Format(time.RFC1123)
+// 	w.Write([]byte("the time is -> " + tm))
+// }
+
+
+/*
+
+Note that in the above code , we are directly assuming that the user may want to see 
+the time in time.RFC1123 , but what if the user wants to see the the time in diff format ? 
+
+we cant update the func as - func(format string , w http.ResponseWriter , r *http.Request ) 
+this is cus it will then not implement the interface of ServeHttp() handler , 
+
+so instead we create a clojure as seen below , which will take the format string as param and 
+return a anonymous function which will be implicitly referenced as having ServeHttp()
+
+
+*/
+
+func timeHandler(format string) http.Handler {
+	// tm := time.Now().Format(format) 										incorrect way !
+
+	fn := func(w http.ResponseWriter , r *http.Request) {
+		tm := time.Now().Format(format) 									// correct way !
+		w.Write([]byte("the time is -> " + tm))
+	}
+
+	return http.HandlerFunc(fn)
+}
+
+
+
+
+func main() {
+
+	// mux := http.NewServeMux()  
+
+	/*
+	However it seems that if we use clojures , we do not need to create a mux instance 
+	we can pass nil  **Need to confirm this in future !
+	*/
+
+
+	// th := http.HandlerFunc(timeHandler)
+	// mux.Handle("/foo" , th)
+
+	// mux.HandleFunc("/foo" , timeHandler)  // the above 2 lines converted to this line 
+
+	// doing the clojures way ! 
+
+
+	th := timeHandler(time.RFC1123)
+	http.Handle("/foo" , th )
+
+	http.ListenAndServe(":8080" , nil)
+
+}
+

@@ -1,0 +1,58 @@
+package main
+
+package main
+
+import (
+	"fmt"
+)
+
+
+type Server struct{
+	users map[string]string
+	userch chan string 
+}
+
+func NewServer() *Server {
+	return &Server{
+		users: make(map[string]string),
+		userch: make(chan string),
+	}
+}
+
+// func (s *Server) addUser ( user string ){
+// 	s.users[user] = user
+// 	fmt.Println( s.users  )
+// }
+
+func ( s *Server ) Start (){
+	go s.Loop()
+} 
+
+func ( s *Server ) Loop (){
+	for {
+		user := <- s.userch
+		s.users[user] = user
+		fmt.Printf("adding user %s \n" , user )
+	}
+}
+
+
+func main() {
+	
+	server := NewServer()
+	server.Start()
+
+	for i := 0 ; i < 10 ; i++ {
+
+		go func (i int) {
+			fmt.Println(i)
+			server.userch <- fmt.Sprintf("user_%d" , i)
+			fmt.Println(i)
+		}(i)	
+
+		// server.addUser( fmt.Sprintf("user_%d" , i) )
+	}
+
+	fmt.Println("Loop done")
+	
+}

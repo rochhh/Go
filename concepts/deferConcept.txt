@@ -1,0 +1,64 @@
+package main
+
+// package main
+
+// import (
+// 	"fmt"
+// )
+
+// func deferConcept() {
+// 	b()
+
+// 	/*
+	
+// 	OUTPUTS - 
+
+// 	statement 1 in the trace function ->  the msg in the func b
+// 	statement 4 in the function B 
+// 	statement 1 in the trace function ->  the msg in the func a 
+// 	statement 3 in the function A 
+// 	statement 2 In the untrace function => the msg in the func a 
+// 	statement 2 In the untrace function => the msg in the func b
+
+
+// 	think of it as the trace() is executed and the untrace() is not as it has defer , so only untrace() will follow LIFO and not the param inside it even though it is a function !
+	
+// 	*/
+// }
+
+// func trace ( s string ) string {
+// 	fmt.Println(" statement 1 in the trace function -> " , s)
+// 	return s
+// }
+
+// func untrace( s string ){
+// 	fmt.Println(" statement 2 In the untrace function =>" , s)
+// }
+
+// func a (){
+// 	defer untrace( trace("the msg in the func a ") )
+// 	fmt.Println(" statement 3 in the function A ")
+// }
+
+
+// func b (){
+// 	defer untrace( trace("the msg in the func b") )
+// 	fmt.Println(" statement 4 in the function B ")
+// 	a()
+// } 
+
+
+
+
+
+// f := createFile("random.txt")
+// defer closeFile(f)
+// .....
+// .....
+// writeFile(f)
+
+
+
+// this makes sure that the user does not forget to close the file and is declared right 
+// next to the createFile , so that while returing , the file is closed !
+

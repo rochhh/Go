@@ -1,0 +1,23 @@
+package main
+
+// package main
+
+import (
+	"fmt"
+	"io"
+	// "log"
+	"os"
+)
+
+
+func main() {
+	
+	file , _ := os.Open("file.txt")
+
+	buffer := make([]byte , 3)
+
+	reader := io.Reader(file)
+	n , _ := reader.Read(buffer)
+
+	fmt.Println( string(buffer) , n)
+}

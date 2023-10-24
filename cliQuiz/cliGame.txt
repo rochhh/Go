@@ -1,0 +1,89 @@
+package main
+
+package main
+
+import (
+	"encoding/csv"
+	"flag"
+	"fmt"
+	"log"
+	"os"
+	"strings"
+	"time"
+)
+
+type problem struct{
+	q string 
+	a string 
+}
+
+
+func parseLines( lines [][]string ) []problem {
+
+	ret := make([]problem , len(lines))
+
+	for i , line := range lines {
+		ret[i] = problem{
+			q: line[0],
+			a: strings.TrimSpace(line[1]),
+		}
+	}
+
+	return ret
+}
+
+func main() {
+	csvfName := flag.String("csv" , "problems.csv" , "a csv file in the format of :- 'q,a' ")
+	timeLimit := flag.Int("limit" , 30 , "time limit for the quiz")
+
+	flag.Parse()
+
+	file , err := os.Open(*csvfName)
+
+	if err != nil {
+		log.Fatalf(" the File %v  does not exist \n" , *csvfName )
+	}
+
+	r := csv.NewReader(file)
+
+	lines , err := r.ReadAll()
+
+	if err != nil{
+		log.Fatal(err)
+	}
+
+	problems := parseLines(lines)
+
+	timer := time.NewTimer( time.Duration(*timeLimit) * time.Second )
+
+	counter := 0
+	
+	for i , p := range problems{
+		fmt.Printf(" Q %d - The problem is :- %v \n " , i+1 , p.q)
+
+		ansch := make(chan string)
+
+		go func ()  {
+			var ans string
+			fmt.Scanf("%v\n" , &ans )
+			ansch <- ans	
+		}()
+
+
+		select{
+
+		case <- timer.C:
+			fmt.Printf("score :- %v / %v " , counter , len(problems) )
+			return
+		
+		case answer := <- ansch :
+			
+			if answer == p.a{
+				counter++
+			}
+		}
+	}
+
+	fmt.Printf("score :- %v / %v " , counter , len(problems) )
+
+}
