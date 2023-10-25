@@ -1,0 +1,41 @@
+package main
+
+import (
+	// "encoding/json"
+	"flag"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+
+	cyoa "github.com/rochhh/golang-concepts"
+
+)
+
+func main() {
+	// port := flag.Int("port" , 3000 , "port to start the web app")
+	filename := flag.String("file" , "gopher.json" , "JSON file for our cyoa app")
+	flag.Parse()
+
+	fmt.Printf("taking the file - %s\n" , *filename)
+
+	f , err := os.Open(*filename)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer f.Close()
+	
+	story , err := cyoa.JsonStory(f)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	http.HandleFunc("/" , cyoa.NewHandler(story).ServeHTTP)
+
+	log.Fatal( http.ListenAndServe(":8080" , nil ))
+
+
+}
