@@ -1,0 +1,45 @@
+package main
+
+// this package should be /examples/ex1/main.go
+
+import (
+	"fmt"
+	"log"
+	"strings"
+
+	link "github.com/rochhh/golang-concepts"
+)
+
+
+var ex = `
+
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Document</title>
+	</head>
+	<body>
+		<h1>hello</h1>
+		<a href="/other-page">Link to another page</a>
+		<a href="/second-page">Link to second page</a>
+	</body>
+	</html>
+
+
+`
+
+func main() {
+	
+	r := strings.NewReader(ex)
+
+	links ,err := link.Parse(r)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf(" %+v\n" , links)
+
+}
